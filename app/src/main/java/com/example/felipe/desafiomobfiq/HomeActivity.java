@@ -5,7 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.android.volley.RequestQueue;
@@ -27,12 +30,14 @@ import java.util.List;
 
 
 public class HomeActivity extends AppCompatActivity implements Response.Listener<JSONObject>,
-        Response.ErrorListener{
+        Response.ErrorListener, View.OnClickListener{
 
     private RelativeLayout mRelativeLayout;
     private List<Product> products = new ArrayList<Product>();
     private ProductViewAdapter pAdapter;
     private RecyclerView productList;
+    private Button btnLoadMore;
+    private Integer offset = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,17 +47,22 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        configure();
+        getProductList();
+    }
+
+    private void configure(){
         mRelativeLayout = (RelativeLayout) findViewById(R.id.activity_home);
         productList = (RecyclerView) findViewById(R.id.recycler);
-
+        btnLoadMore = (Button) findViewById(R.id.btn_load_more);
+        btnLoadMore.setOnClickListener(this);
 
         RecyclerView.LayoutManager layout = new GridLayoutManager(this, 2);
         productList.setLayoutManager(layout);
 
         pAdapter = new ProductViewAdapter(this, products);
         productList.setAdapter(pAdapter);
-
-        getProductList();
+        productList.setNestedScrollingEnabled(false);
     }
 
     private JSONObject onPrepareParams(){
@@ -60,8 +70,10 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
 
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("Query", "");
-        params.put("Offset", "0");
+        params.put("Offset", offset.toString());
         params.put("Size", "10");
+
+        offset += 10;
 
         return new JSONObject(params);
 
@@ -129,4 +141,8 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
     }
 
 
+    @Override
+    public void onClick(View v) {
+        getProductList();
+    }
 }

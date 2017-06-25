@@ -1,16 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+
     android:id="@+id/activity_home"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/viewBg"
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler"
+
+    <TextView
+        android:id="@+id/txt_label"
+        android:text="@string/Products"
+        android:height="50dp"
+        android:textSize="20sp"
+        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_alignParentTop="true"
+        android:background="@drawable/card"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btn_load_more"
+        android:text="@string/Load_more"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/cardview_light_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:padding="10dp"
+        android:layout_above="@id/btn_load_more"
+        android:layout_below="@id/txt_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </android.support.v4.widget.NestedScrollView>
+
+
 
 </RelativeLayout>

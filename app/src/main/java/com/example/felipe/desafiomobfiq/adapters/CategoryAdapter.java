@@ -29,12 +29,13 @@ public class CategoryAdapter extends CustomAdapter<Category> {
     public View getView(int position, View convertView, ViewGroup viewGroup){
         Category c = items.get(position);
 
-        if (inflater == null)
+        if (inflater == null) {
             inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
 
-
-        if (convertView == null)
+        if (convertView == null) {
             convertView = inflater.inflate(R.layout.card_category, null);
+        }
 
         //Get Image
         NetworkImageView imgLocal = (NetworkImageView) convertView.findViewById(R.id.img_category_image);
@@ -46,8 +47,6 @@ public class CategoryAdapter extends CustomAdapter<Category> {
         if (packageName != null) {
             txtTitle.setText(packageName);
         }
-
-
 
         return convertView;
 
