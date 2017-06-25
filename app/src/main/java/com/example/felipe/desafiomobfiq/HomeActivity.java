@@ -12,7 +12,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.felipe.desafiomobfiq.adapters.ProductAdapter;
+import com.example.felipe.desafiomobfiq.adapters.ProductViewAdapter;
 import com.example.felipe.desafiomobfiq.core.AppController;
 import com.example.felipe.desafiomobfiq.models.Product;
 import com.example.felipe.desafiomobfiq.utils.Utils;
@@ -31,11 +31,13 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
 
     private RelativeLayout mRelativeLayout;
     private List<Product> products = new ArrayList<Product>();
-    private ProductAdapter pAdapter;
+    private ProductViewAdapter pAdapter;
     private RecyclerView productList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(Utils.MOBIFQ, "Creating HomeActive");
+
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
@@ -47,13 +49,15 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
         RecyclerView.LayoutManager layout = new GridLayoutManager(this, 2);
         productList.setLayoutManager(layout);
 
-        pAdapter = new ProductAdapter(this, products);
+        pAdapter = new ProductViewAdapter(this, products);
         productList.setAdapter(pAdapter);
 
         getProductList();
     }
 
     private JSONObject onPrepareParams(){
+        Log.d(Utils.MOBIFQ, "Prepare params to search");
+
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("Query", "");
         params.put("Offset", "0");
@@ -64,6 +68,8 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
     }
 
     private void getProductList(){
+        Log.d(Utils.MOBIFQ, "Retrieving product list");
+
         RequestQueue queue = AppController.getInstance(this.getApplicationContext()).getRequestQueue();
         String url = Utils.API_URL + "/Search/criteria";
         JsonObjectRequest jsonRequest = new JsonObjectRequest(url, onPrepareParams(), this, this);
@@ -71,6 +77,8 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
     }
 
     private void onBuildProductList(JSONArray productsJson){
+        Log.d(Utils.MOBIFQ, "Deserializing list from server");
+
         try {
             for (int i = 0; i < productsJson.length(); i++) {
                 Product p = new Product();
@@ -95,7 +103,6 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
 
             }
 
-            Log.d("TESTE", "" + products.size());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -104,6 +111,8 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
 
     @Override
     public void onResponse(JSONObject response) {
+        Log.d(Utils.MOBIFQ, "Callback complete");
+
         try {
             JSONArray productsJson = response.getJSONArray("Products");
             onBuildProductList(productsJson);
@@ -116,7 +125,7 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
 
     @Override
     public void onErrorResponse(VolleyError error) {
-
+        Log.e(Utils.MOBIFQ, String.format("Error: %s", error.getMessage()));
     }
 
 

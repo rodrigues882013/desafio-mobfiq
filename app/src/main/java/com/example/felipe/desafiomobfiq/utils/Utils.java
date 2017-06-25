@@ -7,6 +7,7 @@ package com.example.felipe.desafiomobfiq.utils;
 public class Utils {
 
     public final static String API_URL = "https://desafio.mobfiq.com.br";
+    public final static String MOBIFQ = "MOBIFIQ";
     final public static int GENERIC_RESOURCE_ID = 1;
 
 }

@@ -12,6 +12,11 @@ public class Category {
     @DatabaseField
     private String name;
 
+    @DatabaseField
+    private String image;
+
+    public Category(){}
+
     public Category(String name) {
         this.name = name;
     }
@@ -22,6 +27,22 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Override

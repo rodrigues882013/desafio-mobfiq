@@ -17,9 +17,9 @@ import java.util.List;
  * Created by felipe on 6/24/17.
  */
 
-public class ProductAdapter extends CustomAdapter<Product> {
+public class ProductViewAdapter extends CustomRecycleViewAdapter<Product> {
 
-    public ProductAdapter(Activity activity, List<Product> items) {
+    public ProductViewAdapter(Activity activity, List<Product> items) {
         super(activity, items);
     }
 
