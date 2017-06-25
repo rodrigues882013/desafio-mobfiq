@@ -1,23 +1,16 @@
 package com.example.felipe.desafiomobfiq.adapters;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
-import com.android.volley.toolbox.NetworkImageView;
 import com.example.felipe.desafiomobfiq.R;
+import com.example.felipe.desafiomobfiq.adapters.viewholders.ProductViewHolder;
 import com.example.felipe.desafiomobfiq.core.AppController;
-import com.example.felipe.desafiomobfiq.helpers.DatabaseHelper;
 import com.example.felipe.desafiomobfiq.models.Product;
-import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
 
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -32,9 +25,23 @@ public class ProductAdapter extends CustomAdapter<Product> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+        View v = LayoutInflater.from(this.activity).inflate(R.layout.card_product, parent, false);
+        return new ProductViewHolder(v);
     }
 
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+
+        ProductViewHolder holder = (ProductViewHolder) viewHolder;
+        Product p  = (Product) this.items.get(position) ;
+
+        holder.getTxtName().setText(p.getName());
+        holder.getTxtPrice().setText(p.getPrice().toString());
+        holder.getnImg().setImageUrl(p.getImage(), AppController.getInstance(activity).getImageLoader());
+
+        //demais campos
+
+    }
 
 
 
