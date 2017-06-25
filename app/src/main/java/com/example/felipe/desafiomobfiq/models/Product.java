@@ -20,6 +20,8 @@ public class Product {
     @DatabaseField
     private String image;
 
+    public Product(){ }
+
     public Product(String name,
                    Double price,
                    String image){
