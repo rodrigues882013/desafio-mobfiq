@@ -1,6 +1,7 @@
 package com.example.felipe.desafiomobfiq;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.android.volley.RequestQueue;
@@ -38,6 +40,8 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
     private RecyclerView productList;
     private Button btnLoadMore;
     private Integer offset = 0;
+    private ProgressBar progBarSm;
+    private RecyclerView.LayoutManager layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +59,27 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
         mRelativeLayout = (RelativeLayout) findViewById(R.id.activity_home);
         productList = (RecyclerView) findViewById(R.id.recycler);
         btnLoadMore = (Button) findViewById(R.id.btn_load_more);
-        btnLoadMore.setOnClickListener(this);
+        progBarSm = (ProgressBar) findViewById(R.id.pb_progress_small);
 
-        RecyclerView.LayoutManager layout = new GridLayoutManager(this, 2);
+        btnLoadMore.setOnClickListener(this);
+        layout = new GridLayoutManager(this, 2);
         productList.setLayoutManager(layout);
 
         pAdapter = new ProductViewAdapter(this, products);
         productList.setAdapter(pAdapter);
         productList.setNestedScrollingEnabled(false);
+
+
+    }
+
+    private void changeProgressBar(){
+        if (progBarSm.getVisibility() == View.INVISIBLE || progBarSm.getVisibility() == View.GONE){
+            btnLoadMore.setVisibility(View.GONE);
+            progBarSm.setVisibility(View.VISIBLE);
+        } else {
+            progBarSm.setVisibility(View.GONE);
+            btnLoadMore.setVisibility(View.VISIBLE);
+        }
     }
 
     private JSONObject onPrepareParams(){
@@ -73,15 +90,13 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
         params.put("Offset", offset.toString());
         params.put("Size", "10");
 
-        offset += 10;
-
         return new JSONObject(params);
 
     }
 
     private void getProductList(){
         Log.d(Utils.MOBIFQ, "Retrieving product list");
-
+        changeProgressBar();
         RequestQueue queue = AppController.getInstance(this.getApplicationContext()).getRequestQueue();
         String url = Utils.API_URL + "/Search/criteria";
         JsonObjectRequest jsonRequest = new JsonObjectRequest(url, onPrepareParams(), this, this);
@@ -129,6 +144,9 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
             JSONArray productsJson = response.getJSONArray("Products");
             onBuildProductList(productsJson);
             pAdapter.notifyDataSetChanged();
+            productList.scrollToPosition(products.size()-1);
+            changeProgressBar();
+            offset += 10;
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -137,7 +155,8 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Log.e(Utils.MOBIFQ, String.format("Error: %s", error.getMessage()));
+        changeProgressBar();
+        Utils.onErrorHandler(this, error.getMessage());
     }
 
 

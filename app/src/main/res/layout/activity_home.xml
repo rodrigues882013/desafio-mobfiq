@@ -10,18 +10,31 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
-
-
-    <TextView
-        android:id="@+id/txt_label"
-        android:text="@string/Products"
-        android:height="50dp"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_alignParentTop="true"
+    <LinearLayout
+        android:id="@+id/layout_1"
         android:background="@drawable/card"
-        android:layout_height="wrap_content"/>
+
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/pb_progress_small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"/>
+
+
+        <TextView
+            android:id="@+id/txt_label"
+            android:text="@string/Products"
+            android:height="50dp"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_load_more"
@@ -33,11 +46,10 @@
         android:layout_alignParentBottom="true" />
 
 
-
     <android.support.v4.widget.NestedScrollView
         android:padding="10dp"
         android:layout_above="@id/btn_load_more"
-        android:layout_below="@id/txt_label"
+        android:layout_below="@id/layout_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
