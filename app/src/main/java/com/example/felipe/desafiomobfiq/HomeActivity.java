@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -31,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class HomeActivity extends AppCompatActivity implements Response.Listener<JSONObject>,
+public class HomeActivity extends BaseActivity implements Response.Listener<JSONObject>,
         Response.ErrorListener, View.OnClickListener{
 
     private RelativeLayout mRelativeLayout;
@@ -44,12 +46,16 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
     private RecyclerView.LayoutManager layout;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         Log.d(Utils.MOBIFQ, "Creating HomeActive");
 
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        //setContentView(R.layout.activity_home);
+        final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        View contentView = inflater.inflate(R.layout.activity_home, null, false);
+        super.drawerLayout.addView(contentView, 0);
 
         configure();
         getProductList();
@@ -163,5 +169,18 @@ public class HomeActivity extends AppCompatActivity implements Response.Listener
     @Override
     public void onClick(View v) {
         getProductList();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon action bar is clicked; go to parent activity
+                this.finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
