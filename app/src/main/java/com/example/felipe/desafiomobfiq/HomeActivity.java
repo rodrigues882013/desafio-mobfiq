@@ -1,12 +1,18 @@
 package com.example.felipe.desafiomobfiq;
 
+import android.app.SearchManager;
+import android.app.SearchableInfo;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +27,7 @@ import com.example.felipe.desafiomobfiq.adapters.ProductViewAdapter;
 import com.example.felipe.desafiomobfiq.core.AppController;
 import com.example.felipe.desafiomobfiq.models.Product;
 import com.example.felipe.desafiomobfiq.utils.Utils;
+import com.github.underscore.$;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,7 +56,7 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
 
         super.onCreate(savedInstanceState);
         onConfigure();
-        getProductList();
+        getProductList(onPrepareParams(null));
     }
 
     @Override
@@ -83,10 +90,10 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
 
     @Override
     public void onClick(View v) {
-        getProductList();
+        getProductList(onPrepareParams(null));
     }
 
-    private void onConfigure(){
+    protected void onConfigure(){
         onInflate(R.layout.activity_home);
 
         //Super class
@@ -113,7 +120,7 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
 
     }
 
-    private void changeProgressBar(){
+    protected void changeProgressBar(){
         if (progBarSm.getVisibility() == View.INVISIBLE || progBarSm.getVisibility() == View.GONE){
             btnLoadMore.setVisibility(View.GONE);
             progBarSm.setVisibility(View.VISIBLE);
@@ -124,11 +131,11 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
         }
     }
 
-    private JSONObject onPrepareParams(){
+    protected JSONObject onPrepareParams(String q){
         Log.d(Utils.MOBIFQ, "Prepare params to search");
 
         HashMap<String, String> params = new HashMap<String, String>();
-        params.put("Query", "");
+        params.put("Query", $.isNull(q) ? "" : q);
         params.put("Offset", offset.toString());
         params.put("Size", "10");
 
@@ -136,16 +143,16 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
 
     }
 
-    private void getProductList(){
+    protected void getProductList(JSONObject params){
         Log.d(Utils.MOBIFQ, "Retrieving product list");
         changeProgressBar();
         RequestQueue queue = AppController.getInstance(this.getApplicationContext()).getRequestQueue();
         String url = Utils.API_URL + "/Search/criteria";
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(url, onPrepareParams(), this, this);
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(url, params, this, this);
         queue.add(jsonRequest);
     }
 
-    private void onBuildProductList(JSONArray productsJson){
+    protected void onBuildProductList(JSONArray productsJson){
         Log.d(Utils.MOBIFQ, "Deserializing list from server");
 
         try {

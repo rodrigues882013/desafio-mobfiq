@@ -64,7 +64,7 @@ public class CategoryActivity extends BaseActivity implements Response.Listener<
         Log.e(Utils.MOBIFQ, String.format("Error: %s", error.getMessage()));
     }
 
-    private void onConfigure(){
+    protected void onConfigure(){
         onInflate(R.layout.activity_category);
 
         //Super class

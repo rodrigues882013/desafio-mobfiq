@@ -2,11 +2,12 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <!-- Search, should appear as action button -->
     <item android:id="@+id/action_search"
         android:icon="@drawable/action_search"
         android:title="Search"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom|collapseActionView"
         android:actionViewClass="android.widget.SearchView" />
 
     <!-- Settings, should always be in the overflow -->
