@@ -8,16 +8,7 @@
     android:orientation="vertical"
     android:background="@color/viewBg"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity">
-
-    <Button
-        android:id="@+id/btn_load_more"
-        android:text="@string/Load_more"
-        android:background="@color/colorPrimary"
-        android:textColor="@color/cardview_light_background"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
+    tools:context=".SearchActivity">
 
     <include layout="@layout/action_bar" />
 
