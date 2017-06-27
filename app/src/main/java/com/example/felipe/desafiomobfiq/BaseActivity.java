@@ -25,6 +25,8 @@ import android.widget.ListView;
 import com.example.felipe.desafiomobfiq.utils.Utils;
 import com.github.underscore.$;
 
+import org.json.JSONArray;
+
 import java.sql.SQLException;
 
 /**
@@ -75,6 +77,11 @@ public class BaseActivity extends AppCompatActivity implements ListView.OnItemCl
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    public void onBuildItemList(JSONArray itemsJson) {
+        Log.d(Utils.MOBIFQ, "Deserializing list from server");
     }
 
     protected void onInflate(int layoutId){

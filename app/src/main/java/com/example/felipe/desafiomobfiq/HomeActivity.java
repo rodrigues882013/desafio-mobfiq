@@ -1,40 +1,27 @@
 package com.example.felipe.desafiomobfiq;
 
-import android.app.SearchManager;
-import android.app.SearchableInfo;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.felipe.desafiomobfiq.adapters.ProductViewAdapter;
-import com.example.felipe.desafiomobfiq.core.AppController;
+import com.example.felipe.desafiomobfiq.helpers.ProductIFunctionalActionImpl;
 import com.example.felipe.desafiomobfiq.models.Product;
 import com.example.felipe.desafiomobfiq.utils.Utils;
-import com.github.underscore.$;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -49,6 +36,7 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
     private Integer offset = 0;
     private ProgressBar progBarSm;
     private RecyclerView.LayoutManager layout;
+    private ProductIFunctionalActionImpl action = ProductIFunctionalActionImpl.getInstance();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +44,8 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
 
         super.onCreate(savedInstanceState);
         onConfigure();
-        getProductList(onPrepareParams(null));
+        changeProgressBar();
+        action.getList(action.onPrepareParams(null, offset), this.getApplicationContext(), this, this);
     }
 
     @Override
@@ -71,7 +60,7 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
 
         try {
             JSONArray productsJson = response.getJSONArray("Products");
-            onBuildProductList(productsJson);
+            products.addAll(action.onBuildItemsList(this, productsJson));
             pAdapter.notifyDataSetChanged();
             productList.scrollToPosition(products.size()-1);
             changeProgressBar();
@@ -90,7 +79,7 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
 
     @Override
     public void onClick(View v) {
-        getProductList(onPrepareParams(null));
+        action.getList(action.onPrepareParams(null, offset), this.getApplicationContext(), this, this);
     }
 
     protected void onConfigure(){
@@ -103,6 +92,7 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
         if (toolbar != null) {
             onInitToolbar(null);
         }
+
 
         mRelativeLayout = (RelativeLayout) findViewById(R.id.activity_home);
         productList = (RecyclerView) findViewById(R.id.recycler);
@@ -118,6 +108,7 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
         productList.setNestedScrollingEnabled(false);
 
 
+
     }
 
     protected void changeProgressBar(){
@@ -131,58 +122,5 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
         }
     }
 
-    protected JSONObject onPrepareParams(String q){
-        Log.d(Utils.MOBIFQ, "Prepare params to search");
-
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("Query", $.isNull(q) ? "" : q);
-        params.put("Offset", offset.toString());
-        params.put("Size", "10");
-
-        return new JSONObject(params);
-
-    }
-
-    protected void getProductList(JSONObject params){
-        Log.d(Utils.MOBIFQ, "Retrieving product list");
-        changeProgressBar();
-        RequestQueue queue = AppController.getInstance(this.getApplicationContext()).getRequestQueue();
-        String url = Utils.API_URL + "/Search/criteria";
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(url, params, this, this);
-        queue.add(jsonRequest);
-    }
-
-    protected void onBuildProductList(JSONArray productsJson){
-        Log.d(Utils.MOBIFQ, "Deserializing list from server");
-
-        try {
-            for (int i = 0; i < productsJson.length(); i++) {
-                Product p = new Product();
-                JSONObject jsonObj = productsJson.getJSONObject(i);
-
-                //Some informations are extract directly from SKU's
-                JSONArray skusJson = jsonObj.getJSONArray("Skus");
-                JSONObject skuJson = skusJson.getJSONObject(0);
-                JSONArray imagesJson = skuJson.getJSONArray("Images");
-                JSONObject imageJson = imagesJson.getJSONObject(0);
-                JSONArray sellersJson = skuJson.getJSONArray("Sellers");
-                JSONObject sellerJson = sellersJson.getJSONObject(0);
-
-                String imgUrl = imageJson.getString("ImageUrl");
-                Double price = sellerJson.getDouble("Price");
-
-                p.setName(jsonObj.getString("Name"));
-                p.setImage(imgUrl);
-                p.setPrice(price);
-
-                products.add(p);
-
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
 
 }
