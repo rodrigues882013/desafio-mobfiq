@@ -1,17 +1,15 @@
 package com.example.felipe.desafiomobfiq;
 
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
@@ -49,19 +47,56 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
     public void onCreate(Bundle savedInstanceState) {
         Log.d(Utils.MOBIFQ, "Creating HomeActive");
 
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_home);
-        final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
-
-        View contentView = inflater.inflate(R.layout.activity_home, null, false);
-        super.drawerLayout.addView(contentView, 0);
-
-        configure();
+        onConfigure();
         getProductList();
     }
 
-    private void configure(){
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onResponse(JSONObject response) {
+        Log.d(Utils.MOBIFQ, "Callback complete");
+
+        try {
+            JSONArray productsJson = response.getJSONArray("Products");
+            onBuildProductList(productsJson);
+            pAdapter.notifyDataSetChanged();
+            productList.scrollToPosition(products.size()-1);
+            changeProgressBar();
+            offset += 10;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        changeProgressBar();
+        Utils.onErrorHandler(this, error.getMessage());
+    }
+
+    @Override
+    public void onClick(View v) {
+        getProductList();
+    }
+
+    private void onConfigure(){
+        onInflate(R.layout.activity_home);
+
+        //Super class
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        super.setActionBarParams();
+
+        if (toolbar != null) {
+            onInitToolbar(null);
+        }
+
         mRelativeLayout = (RelativeLayout) findViewById(R.id.activity_home);
         productList = (RecyclerView) findViewById(R.id.recycler);
         btnLoadMore = (Button) findViewById(R.id.btn_load_more);
@@ -82,6 +117,7 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
         if (progBarSm.getVisibility() == View.INVISIBLE || progBarSm.getVisibility() == View.GONE){
             btnLoadMore.setVisibility(View.GONE);
             progBarSm.setVisibility(View.VISIBLE);
+
         } else {
             progBarSm.setVisibility(View.GONE);
             btnLoadMore.setVisibility(View.VISIBLE);
@@ -142,45 +178,4 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
 
     }
 
-    @Override
-    public void onResponse(JSONObject response) {
-        Log.d(Utils.MOBIFQ, "Callback complete");
-
-        try {
-            JSONArray productsJson = response.getJSONArray("Products");
-            onBuildProductList(productsJson);
-            pAdapter.notifyDataSetChanged();
-            productList.scrollToPosition(products.size()-1);
-            changeProgressBar();
-            offset += 10;
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        changeProgressBar();
-        Utils.onErrorHandler(this, error.getMessage());
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        getProductList();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // app icon action bar is clicked; go to parent activity
-                this.finish();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 }

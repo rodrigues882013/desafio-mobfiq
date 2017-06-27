@@ -20,7 +20,7 @@ import java.util.List;
 
 public class CategoryAdapter extends CustomAdapter<Category> {
 
-    CategoryAdapter(Activity activity, List<Category> items) {
+    public CategoryAdapter(Activity activity, List<Category> items) {
         super(activity, items);
     }
 

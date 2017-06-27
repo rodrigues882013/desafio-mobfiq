@@ -36,17 +36,21 @@ abstract class CustomAdapter<T> extends BaseAdapter{
     }
     @Override
     public int getCount() {
-        return 0;
+        return this.items.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
+    public T getItem(int position) {
+        return this.items.get(position) ;
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        if (position < 0 || position >= mIdMap.size()) {
+            return -1;
+        }
+        T item = getItem(position);
+        return mIdMap.get(item);
     }
 
     @Override

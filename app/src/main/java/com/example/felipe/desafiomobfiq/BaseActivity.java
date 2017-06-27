@@ -6,6 +6,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -13,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.felipe.desafiomobfiq.utils.Utils;
+import com.github.underscore.$;
 
 import java.sql.SQLException;
 
@@ -24,21 +29,15 @@ public class BaseActivity extends AppCompatActivity implements ListView.OnItemCl
     protected DrawerLayout drawerLayout;
     private String[] menuTitles;
     private ListView menuDrawer;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private Toolbar toolbar;
+    protected ActionBarDrawerToggle mDrawerToggle;
+    protected Toolbar toolbar;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.base);
-        createWidgets();
-        setActionBarParams();
-
-        if (toolbar != null) {
-            toolbar.setTitle("Navigation Drawer");
-            setSupportActionBar(toolbar);
-        }
+        onConfigure();
     }
 
     @Override
@@ -52,48 +51,73 @@ public class BaseActivity extends AppCompatActivity implements ListView.OnItemCl
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
-
-    @Override
     public void onBackPressed() {
         finish();
     }
 
-
-    private void setActionBarParams() {
-            mDrawerToggle = new ActionBarDrawerToggle(this,
-                    drawerLayout,
-                    toolbar,
-                    R.string.drawer_open,
-                    R.string.drawer_close) {
-
-                /** Called when a drawer has settled in a completely closed state. */
-                public void onDrawerClosed(View view) {
-                    super.onDrawerClosed(view);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if(drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                    drawerLayout.closeDrawer(Gravity.LEFT);
+                } else {
+                    drawerLayout.openDrawer(Gravity.LEFT);
                 }
+                return true;
 
-                /** Called when a drawer has settled in a completely open state. */
-                public void onDrawerOpened(View drawerView) {
-                    super.onDrawerOpened(drawerView);
-                }
-            };
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
-            drawerLayout.addDrawerListener(mDrawerToggle);
+    protected void onInflate(int layoutId){
+        final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+        View contentView = inflater.inflate(layoutId, null, false);
+        drawerLayout.addView(contentView, 0);
+    }
+
+    private void onConfigure() {
+        menuTitles = getResources().getStringArray(R.array.menu_item);
+        drawerLayout = (DrawerLayout) findViewById(R.id.base_layout);
+        menuDrawer = (ListView) findViewById(R.id.left_drawer);
+        menuDrawer.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuTitles));
+        menuDrawer.setOnItemClickListener(this);
+    }
+
+    protected void setActionBarParams() {
+        mDrawerToggle = new ActionBarDrawerToggle(this,
+                drawerLayout,
+                toolbar,
+                R.string.drawer_open,
+                R.string.drawer_close) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                Log.d(Utils.MOBIFQ, "TESTE");
+                super.onDrawerOpened(drawerView);
+            }
+        };
+
+        drawerLayout.addDrawerListener(mDrawerToggle);
 
 
     }
 
-    private void createWidgets() {
-        menuTitles = getResources().getStringArray(R.array.menu_item);
-        drawerLayout = (DrawerLayout) findViewById(R.id.base_layout);
-        menuDrawer = (ListView) findViewById(R.id.left_drawer);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+    protected void onInitToolbar(String title){
 
-        menuDrawer.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuTitles));
-        menuDrawer.setOnItemClickListener(this);
+        if (!$.isNull(title)){
+            toolbar.setTitle(title);
+        }
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
     protected void selectItem(int position) {

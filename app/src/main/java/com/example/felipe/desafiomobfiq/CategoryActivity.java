@@ -2,7 +2,10 @@ package com.example.felipe.desafiomobfiq;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
 
@@ -27,7 +30,7 @@ import java.util.List;
  * Created by felipe on 6/25/17.
  */
 
-public class CategoryActivity extends AppCompatActivity implements Response.Listener<JSONObject>,
+public class CategoryActivity extends BaseActivity implements Response.Listener<JSONObject>,
         Response.ErrorListener{
 
     private List<Category> categories = new ArrayList<Category>();
@@ -35,14 +38,45 @@ public class CategoryActivity extends AppCompatActivity implements Response.List
     private ListView categoryList;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         Log.d(Utils.MOBIFQ, "Creating CategoryActive");
-
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_category);
-        categoryList.setAdapter(cAdapter);
+        onConfigure();
         getCategoryList();
+    }
+
+    @Override
+    public void onResponse(JSONObject response) {
+        Log.d(Utils.MOBIFQ, "Callback complete");
+
+        try {
+            JSONArray categoryJson = response.getJSONArray("Categories");
+            onBuildCategoryList(categoryJson);
+            cAdapter.notifyDataSetChanged();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        Log.e(Utils.MOBIFQ, String.format("Error: %s", error.getMessage()));
+    }
+
+    private void onConfigure(){
+        onInflate(R.layout.activity_category);
+
+        //Super class
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        super.setActionBarParams();
+
+        if (toolbar != null) {
+            super.onInitToolbar("Category");
+        }
+        categoryList = (ListView) findViewById(R.id.category_list);
+        cAdapter = new CategoryAdapter(this, categories);
+        categoryList.setAdapter(cAdapter);
     }
 
     private void getCategoryList() {
@@ -50,21 +84,6 @@ public class CategoryActivity extends AppCompatActivity implements Response.List
         String url = Utils.API_URL + "/StorePreference/CategoryTree";
         JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
         queue.add(jsonObject);
-    }
-
-
-    @Override
-    public void onResponse(JSONObject response) {
-        Log.d(Utils.MOBIFQ, "Callback complete");
-
-        try {
-            JSONArray categoryJson = response.getJSONArray("Category");
-            onBuildCategoryList(categoryJson);
-            cAdapter.notifyDataSetChanged();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     private void onBuildCategoryList(JSONArray categoryJson) {
@@ -85,8 +104,4 @@ public class CategoryActivity extends AppCompatActivity implements Response.List
         }
     }
 
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        Log.e(Utils.MOBIFQ, String.format("Error: %s", error.getMessage()));
-    }
 }

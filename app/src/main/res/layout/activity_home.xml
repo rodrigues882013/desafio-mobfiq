@@ -11,6 +11,17 @@
     tools:context=".HomeActivity">
 
     <LinearLayout
+        android:id="@+id/l2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar"  />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@id/l2"
         android:id="@+id/layout_1"
         android:background="@drawable/card"
 
@@ -61,7 +72,6 @@
             android:layout_height="wrap_content" />
 
     </android.support.v4.widget.NestedScrollView>
-
 
 
 </RelativeLayout>
