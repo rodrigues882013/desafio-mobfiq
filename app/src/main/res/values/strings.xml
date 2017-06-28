@@ -11,4 +11,6 @@
         <item>Home</item>
         <item>Category</item>
     </array>
+    <string name="title_activity_push_fragment">PushFragmentActivity</string>
+    <string name="hello_world">hello</string>
 </resources>

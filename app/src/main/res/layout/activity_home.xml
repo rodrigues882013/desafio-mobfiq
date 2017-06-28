@@ -13,7 +13,7 @@
     <Button
         android:id="@+id/btn_load_more"
         android:text="@string/Load_more"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorRed"
         android:textColor="@color/cardview_light_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

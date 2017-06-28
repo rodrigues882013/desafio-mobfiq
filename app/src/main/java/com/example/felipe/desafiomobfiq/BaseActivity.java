@@ -124,6 +124,7 @@ public class BaseActivity extends AppCompatActivity implements ListView.OnItemCl
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
     }
 
     protected void selectItem(int position) {

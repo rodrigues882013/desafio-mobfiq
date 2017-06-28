@@ -5,11 +5,11 @@
     android:id="@+id/toolbar"
     android:elevation="4dp"
     android:minHeight="?attr/actionBarSize"
-    android:background="@color/colorPrimary"
+    android:background="@color/colorRed"
     android:layout_width="match_parent"
     app:titleTextColor="@color/viewBg"
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
     android:layout_height="wrap_content">
 
 </android.support.v7.widget.Toolbar>

@@ -12,10 +12,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".BaseActivity" />
 
+        <meta-data android:name="PW_APPID" android:value="57B6D-F87B3" />
+        <meta-data android:name="PW_PROJECT_ID" android:value="71481297796" />
+
+        <activity android:name=".BaseActivity" />
         <activity android:name=".HomeActivity">
-            <meta-data android:name="android.app.default_searchable"
+            <meta-data
+                android:name="android.app.default_searchable"
                 android:value=".SearchActivity" />
 
             <intent-filter>
@@ -25,15 +29,33 @@
             </intent-filter>
         </activity>
         <activity android:name=".CategoryActivity" />
-
-        <activity android:name=".SearchActivity"
-            android:launchMode="singleTop" >
+        <activity
+            android:name=".SearchActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
+        <activity
+            android:name=".PushFragmentActivity"
+            android:label="@string/title_activity_push_fragment" />
+
+        <activity
+            android:name="com.pushwoosh.DeepLinkActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="pw-57B6D-F87B3" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
