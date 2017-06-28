@@ -16,6 +16,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.felipe.desafiomobfiq.adapters.CategoryAdapter;
 import com.example.felipe.desafiomobfiq.core.AppController;
+import com.example.felipe.desafiomobfiq.helpers.CategoryIFunctionalActionImpl;
 import com.example.felipe.desafiomobfiq.models.Category;
 import com.example.felipe.desafiomobfiq.utils.Utils;
 
@@ -36,13 +37,14 @@ public class CategoryActivity extends BaseActivity implements Response.Listener<
     private List<Category> categories = new ArrayList<Category>();
     private CategoryAdapter cAdapter;
     private ListView categoryList;
+    private CategoryIFunctionalActionImpl action = CategoryIFunctionalActionImpl.getInstance();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(Utils.MOBIFQ, "Creating CategoryActive");
         super.onCreate(savedInstanceState);
         onConfigure();
-        getCategoryList();
+        action.getList(action.onPrepareParams(null, null), this.getApplicationContext(), this, this);
     }
 
     @Override
@@ -51,7 +53,7 @@ public class CategoryActivity extends BaseActivity implements Response.Listener<
 
         try {
             JSONArray categoryJson = response.getJSONArray("Categories");
-            onBuildCategoryList(categoryJson);
+            categories.addAll(action.onBuildItemsList(this, categoryJson));
             cAdapter.notifyDataSetChanged();
 
         } catch (JSONException e) {
@@ -72,7 +74,7 @@ public class CategoryActivity extends BaseActivity implements Response.Listener<
         super.setActionBarParams();
 
         if (toolbar != null) {
-            super.onInitToolbar("Category");
+            super.onInitToolbar(Utils.CATEGORY);
         }
         categoryList = (ListView) findViewById(R.id.category_list);
         cAdapter = new CategoryAdapter(this, categories);
@@ -80,10 +82,7 @@ public class CategoryActivity extends BaseActivity implements Response.Listener<
     }
 
     private void getCategoryList() {
-        RequestQueue queue = AppController.getInstance(this.getApplicationContext()).getRequestQueue();
-        String url = Utils.API_URL + "/StorePreference/CategoryTree";
-        JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
-        queue.add(jsonObject);
+
     }
 
     private void onBuildCategoryList(JSONArray categoryJson) {

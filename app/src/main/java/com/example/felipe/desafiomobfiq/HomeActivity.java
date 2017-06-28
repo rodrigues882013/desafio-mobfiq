@@ -1,10 +1,15 @@
 package com.example.felipe.desafiomobfiq;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -54,6 +59,7 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
         mDrawerToggle.syncState();
     }
 
+
     @Override
     public void onResponse(JSONObject response) {
         Log.d(Utils.MOBIFQ, "Callback complete");
@@ -79,7 +85,22 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
 
     @Override
     public void onClick(View v) {
+        changeProgressBar();
         action.getList(action.onPrepareParams(null, offset), this.getApplicationContext(), this, this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_bar, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        return true;
     }
 
     protected void onConfigure(){

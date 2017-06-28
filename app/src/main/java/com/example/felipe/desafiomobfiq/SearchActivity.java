@@ -3,9 +3,11 @@ package com.example.felipe.desafiomobfiq;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
@@ -56,7 +58,7 @@ public class SearchActivity extends BaseActivity implements Response.Listener<JS
 
         try {
             JSONArray productsJson = response.getJSONArray("Products");
-            //action.onBuildProductList(this.getApplicationContext(), productsJson);
+            products.addAll(action.onBuildItemsList(this, productsJson));
             pAdapter.notifyDataSetChanged();
             productList.scrollToPosition(products.size()-1);
             offset += 10;
@@ -66,20 +68,11 @@ public class SearchActivity extends BaseActivity implements Response.Listener<JS
         }
     }
 
-//    @Override
-//    public void onBuildItemList(JSONArray productsJson){
-//        super.onBuildItemList(null);
-//
-//        try {
-//            for (int i = 0; i < productsJson.length(); i++) {
-//                products.add(action.onBuildProduct(this, productsJson.getJSONObject(i)));
-//            }
-//
-//        } catch (JSONException e) {
-//            Utils.onErrorHandler(this, e.getMessage());
-//        }
-//
-//    }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleIntent(intent);
+    }
 
     protected void onConfigure(){
         onInflate(R.layout.activity_search);
@@ -89,14 +82,28 @@ public class SearchActivity extends BaseActivity implements Response.Listener<JS
         super.setActionBarParams();
 
         if (toolbar != null) {
-            super.onInitToolbar("Category");
+            super.onInitToolbar(Utils.RESULTS);
         }
 
-        Intent intent = getIntent();
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.activity_home);
+        productList = (RecyclerView) findViewById(R.id.recycler);
+        progBarSm = (ProgressBar) findViewById(R.id.pb_progress_small);
+
+        layout = new GridLayoutManager(this, 2);
+        productList.setLayoutManager(layout);
+
+        pAdapter = new ProductViewAdapter(this, products);
+        productList.setAdapter(pAdapter);
+        productList.setNestedScrollingEnabled(false);
+
+
+        handleIntent(getIntent());
+    }
+
+    private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             action.getList(action.onPrepareParams(query, 0), this, this, this);
-
         }
     }
 

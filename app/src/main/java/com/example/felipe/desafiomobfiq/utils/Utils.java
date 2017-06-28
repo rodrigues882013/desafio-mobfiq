@@ -12,6 +12,12 @@ public class Utils {
 
     public final static String API_URL = "https://desafio.mobfiq.com.br";
     public final static String MOBIFQ = "MOBIFIQ";
+    public final static String HOME = "Home";
+    public final static String RESULTS = "Results";
+    public final static String CATEGORY = "Category";
+
+
+
     private final static String ERROR_MESSAGE = "Something went wrong.";
     final public static int GENERIC_RESOURCE_ID = 1;
 

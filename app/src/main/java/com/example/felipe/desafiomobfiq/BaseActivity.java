@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -45,7 +46,11 @@ public class BaseActivity extends AppCompatActivity implements ListView.OnItemCl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.base);
-        onConfigure();
+        menuTitles = getResources().getStringArray(R.array.menu_item);
+        drawerLayout = (DrawerLayout) findViewById(R.id.base_layout);
+        menuDrawer = (ListView) findViewById(R.id.left_drawer);
+        menuDrawer.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuTitles));
+        menuDrawer.setOnItemClickListener(this);
     }
 
     @Override
@@ -80,22 +85,10 @@ public class BaseActivity extends AppCompatActivity implements ListView.OnItemCl
     }
 
 
-    public void onBuildItemList(JSONArray itemsJson) {
-        Log.d(Utils.MOBIFQ, "Deserializing list from server");
-    }
-
     protected void onInflate(int layoutId){
         final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(layoutId, null, false);
         drawerLayout.addView(contentView, 0);
-    }
-
-    private void onConfigure() {
-        menuTitles = getResources().getStringArray(R.array.menu_item);
-        drawerLayout = (DrawerLayout) findViewById(R.id.base_layout);
-        menuDrawer = (ListView) findViewById(R.id.left_drawer);
-        menuDrawer.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuTitles));
-        menuDrawer.setOnItemClickListener(this);
     }
 
     protected void setActionBarParams() {

@@ -6,13 +6,13 @@
     <!-- Search, should appear as action button -->
     <item android:id="@+id/action_search"
         android:icon="@drawable/action_search"
-        android:title="Search"
-        app:showAsAction="ifRoom|collapseActionView"
-        android:actionViewClass="android.widget.SearchView" />
+        android:title="@string/search"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="android.support.v7.widget.SearchView" />
 
     <!-- Settings, should always be in the overflow -->
     <item android:id="@+id/action_settings"
-        android:title="Sobre"
+        android:title="@string/about"
         app:showAsAction="never"/>
 
 
