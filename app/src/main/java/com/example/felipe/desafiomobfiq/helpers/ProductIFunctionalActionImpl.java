@@ -84,10 +84,15 @@ public class ProductIFunctionalActionImpl implements IFunctionalActions<Product>
 
                 String imgUrl = imageJson.getString("ImageUrl");
                 Double price = sellerJson.getDouble("Price");
+                Double listPrice = sellerJson.getDouble("ListPrice");
+                JSONObject bestInstalments = sellerJson.getJSONObject("BestInstallment");
+                Integer installment = bestInstalments.getInt("Count");
 
                 p.setName(jsonObj.getString("Name"));
                 p.setImage(imgUrl);
                 p.setPrice(price);
+                p.setListPrice(listPrice);
+                p.setInstallment(installment);
 
                 products.add(p);
 

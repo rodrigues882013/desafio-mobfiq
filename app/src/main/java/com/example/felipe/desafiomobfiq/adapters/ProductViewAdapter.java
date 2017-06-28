@@ -12,6 +12,7 @@ import com.example.felipe.desafiomobfiq.core.AppController;
 import com.example.felipe.desafiomobfiq.models.Product;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by felipe on 6/24/17.
@@ -36,7 +37,9 @@ public class ProductViewAdapter extends CustomRecycleViewAdapter<Product> {
         Product p  = (Product) this.items.get(position) ;
 
         holder.getTxtName().setText(p.getName());
-        holder.getTxtPrice().setText(p.getPrice().toString());
+        holder.getTxtPrice().setText(String.format(Locale.UK, "R$ " + "%,.2f",  p.getPrice()));
+        holder.getTxtInstallment().setText(String.format(Locale.UK, "%d x de R$" + "%,.2f", p.getInstallment(), (p.getPrice() / p.getInstallment())));
+        holder.getTxtListPrice().setText(String.format(Locale.UK, "R$ " + "%,.2f", p.getListPrice()));
         holder.getnImg().setImageUrl(p.getImage(), AppController.getInstance(activity).getImageLoader());
 
         //demais campos

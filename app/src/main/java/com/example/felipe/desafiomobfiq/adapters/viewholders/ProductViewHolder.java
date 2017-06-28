@@ -15,6 +15,8 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
 
     private TextView txtName;
     private TextView txtPrice;
+    private TextView txtListPrice;
+    private TextView txtInstallment;
     private NetworkImageView nImg;
 
     public ProductViewHolder(View itemView) {
@@ -24,6 +26,8 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
 
     private void config(){
         configWidgets(R.id.txt_name, itemView);
+        configWidgets(R.id.txt_list_price, itemView);
+        configWidgets(R.id.txt_price_installment, itemView);
         configWidgets(R.id.txt_price, itemView);
         configWidgets(R.id.product_image, itemView);
     }
@@ -35,6 +39,12 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
                 break;
             case R.id.txt_price:
                 txtPrice = (TextView) v.findViewById(vid);
+                break;
+            case R.id.txt_list_price:
+                txtListPrice = (TextView) v.findViewById(vid);
+                break;
+            case R.id.txt_price_installment:
+                txtInstallment = (TextView) v.findViewById(vid);
                 break;
             case R.id.product_image:
                 nImg = (NetworkImageView) v.findViewById(vid);
@@ -70,5 +80,21 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
 
     public void setnImg(NetworkImageView nImg) {
         this.nImg = nImg;
+    }
+
+    public TextView getTxtListPrice() {
+        return txtListPrice;
+    }
+
+    public void setTxtListPrice(TextView txtListPrice) {
+        this.txtListPrice = txtListPrice;
+    }
+
+    public TextView getTxtInstallment() {
+        return txtInstallment;
+    }
+
+    public void setTxtInstallment(TextView txtInstallment) {
+        this.txtInstallment = txtInstallment;
     }
 }
