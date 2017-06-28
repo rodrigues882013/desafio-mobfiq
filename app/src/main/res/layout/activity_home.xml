@@ -10,6 +10,8 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
+    <include layout="@layout/progress_bar" />
+
     <Button
         android:id="@+id/btn_load_more"
         android:text="@string/Load_more"

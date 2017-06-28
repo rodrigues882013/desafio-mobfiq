@@ -13,4 +13,5 @@
     </array>
     <string name="title_activity_push_fragment">PushFragmentActivity</string>
     <string name="hello_world">hello</string>
+    <string name="without_result">Without results, make your search again.</string>
 </resources>

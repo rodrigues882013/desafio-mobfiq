@@ -7,6 +7,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -49,7 +50,8 @@ public class SearchActivity extends BaseActivity implements Response.Listener<JS
 
     @Override
     public void onErrorResponse(VolleyError error) {
-
+        Utils.onErrorHandler(this, String.format("Error: %s", error.getMessage()));
+        changeProgressBar();
     }
 
     @Override
@@ -61,7 +63,7 @@ public class SearchActivity extends BaseActivity implements Response.Listener<JS
             products.addAll(action.onBuildItemsList(this, productsJson));
             pAdapter.notifyDataSetChanged();
             productList.scrollToPosition(products.size()-1);
-            offset += 10;
+            changeProgressBar();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -103,11 +105,18 @@ public class SearchActivity extends BaseActivity implements Response.Listener<JS
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
+            changeProgressBar();
             action.getList(action.onPrepareParams(query, 0), this, this, this);
         }
     }
 
-    private void onExecute(String query){
-
+    @Override
+    protected void changeProgressBar(){
+        if (progBarSm.getVisibility() == View.INVISIBLE ||
+                progBarSm.getVisibility() == View.INVISIBLE){
+            progBarSm.setVisibility(View.VISIBLE);
+        } else {
+            progBarSm.setVisibility(View.INVISIBLE);
+        }
     }
 }

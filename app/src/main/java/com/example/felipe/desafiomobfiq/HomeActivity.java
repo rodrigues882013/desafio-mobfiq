@@ -132,13 +132,14 @@ public class HomeActivity extends BaseActivity implements Response.Listener<JSON
 
     }
 
+    @Override
     protected void changeProgressBar(){
-        if (progBarSm.getVisibility() == View.INVISIBLE || progBarSm.getVisibility() == View.GONE){
-            btnLoadMore.setVisibility(View.GONE);
+        if (progBarSm.getVisibility() == View.INVISIBLE || progBarSm.getVisibility() == View.INVISIBLE){
+            btnLoadMore.setVisibility(View.INVISIBLE);
             progBarSm.setVisibility(View.VISIBLE);
 
         } else {
-            progBarSm.setVisibility(View.GONE);
+            progBarSm.setVisibility(View.INVISIBLE);
             btnLoadMore.setVisibility(View.VISIBLE);
         }
     }

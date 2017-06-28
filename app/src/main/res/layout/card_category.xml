@@ -35,6 +35,7 @@
             android:gravity="start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/cardview_dark_background"
             android:textStyle="bold"
             android:textSize="20sp"
             android:text="dasdasdasd"

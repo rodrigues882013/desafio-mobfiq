@@ -145,5 +145,7 @@ public class BaseActivity extends AppCompatActivity implements ListView.OnItemCl
         }
     }
 
+    protected void changeProgressBar(){}
+
 
 }

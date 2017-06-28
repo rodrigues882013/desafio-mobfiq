@@ -12,9 +12,10 @@
 
     <include layout="@layout/action_bar" />
 
+    <include layout="@layout/progress_bar" />
+
     <include  layout="@layout/subtitle_bar" android:id="@+id/subtitle_bar" />
 
     <include layout="@layout/grid_result_view" />
-
 
 </RelativeLayout>

@@ -9,6 +9,7 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.RecyclerView
+            android:background="@color/viewBg"
             android:id="@+id/recycler"
             android:clipToPadding="false"
             android:scrollbars="vertical"

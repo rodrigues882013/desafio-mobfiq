@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -37,6 +38,7 @@ public class CategoryActivity extends BaseActivity implements Response.Listener<
     private List<Category> categories = new ArrayList<Category>();
     private CategoryAdapter cAdapter;
     private ListView categoryList;
+    private ProgressBar progBarSm;
     private CategoryIFunctionalActionImpl action = CategoryIFunctionalActionImpl.getInstance();
 
     @Override
@@ -44,6 +46,7 @@ public class CategoryActivity extends BaseActivity implements Response.Listener<
         Log.d(Utils.MOBIFQ, "Creating CategoryActive");
         super.onCreate(savedInstanceState);
         onConfigure();
+        changeProgressBar();
         action.getList(action.onPrepareParams(null, null), this.getApplicationContext(), this, this);
     }
 
@@ -55,6 +58,7 @@ public class CategoryActivity extends BaseActivity implements Response.Listener<
             JSONArray categoryJson = response.getJSONArray("Categories");
             categories.addAll(action.onBuildItemsList(this, categoryJson));
             cAdapter.notifyDataSetChanged();
+            changeProgressBar();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -63,11 +67,13 @@ public class CategoryActivity extends BaseActivity implements Response.Listener<
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Log.e(Utils.MOBIFQ, String.format("Error: %s", error.getMessage()));
+        Utils.onErrorHandler(this, String.format("Error: %s", error.getMessage()));
+        changeProgressBar();
     }
 
     protected void onConfigure(){
         onInflate(R.layout.activity_category);
+        progBarSm = (ProgressBar) findViewById(R.id.pb_progress_small);
 
         //Super class
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -81,25 +87,13 @@ public class CategoryActivity extends BaseActivity implements Response.Listener<
         categoryList.setAdapter(cAdapter);
     }
 
-    private void getCategoryList() {
-
-    }
-
-    private void onBuildCategoryList(JSONArray categoryJson) {
-        Log.d(Utils.MOBIFQ, "Deserializing list from server");
-
-        try {
-            for (int i = 0; i < categoryJson.length(); i++) {
-                Category c = new Category();
-                JSONObject jsonObj = categoryJson.getJSONObject(i);
-                c.setName(jsonObj.getString("Name"));
-                c.setImage("");
-                categories.add(c);
-
-            }
-
-        } catch (JSONException e) {
-            Log.e(Utils.MOBIFQ, String.format("Error: %s", e.getMessage()));
+    @Override
+    protected void changeProgressBar(){
+        if (progBarSm.getVisibility() == View.INVISIBLE ||
+                progBarSm.getVisibility() == View.INVISIBLE){
+            progBarSm.setVisibility(View.VISIBLE);
+        } else {
+            progBarSm.setVisibility(View.INVISIBLE);
         }
     }
 
